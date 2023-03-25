@@ -1,0 +1,194 @@
+{
+	"name": "CloudSalesPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach_q5l",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.cw_items",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy_q5l",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{item().source.schema}.@{item().source.table}"
+								},
+								{
+									"name": "Destination",
+									"value": "southridge//@{item().destination.fileName}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"validateDataConsistency": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "SourceDataset_q5l",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_schema": "@item().source.schema",
+										"cw_table": "@item().source.table"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DestinationDataset_q5l",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_fileName": "@item().destination.fileName"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"cw_items": {
+				"type": "Array",
+				"defaultValue": [
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "Addresses"
+						},
+						"destination": {
+							"fileName": "dboAddresses.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "Customers"
+						},
+						"destination": {
+							"fileName": "dboCustomers.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "OrderDetails"
+						},
+						"destination": {
+							"fileName": "dboOrderDetails.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "Orders"
+						},
+						"destination": {
+							"fileName": "dboOrders.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "Addresses"
+						},
+						"destination": {
+							"fileName": "HiddenAddresses.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "AddressUpdates"
+						},
+						"destination": {
+							"fileName": "HiddenAddressUpdates.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "Customers"
+						},
+						"destination": {
+							"fileName": "HiddenCustomers.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "CustomerUpdates"
+						},
+						"destination": {
+							"fileName": "HiddenCustomerUpdates.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "OrderDetails"
+						},
+						"destination": {
+							"fileName": "HiddenOrderDetails.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "Orders"
+						},
+						"destination": {
+							"fileName": "HiddenOrders.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "OrderUpdates"
+						},
+						"destination": {
+							"fileName": "HiddenOrderUpdates.parquet"
+						}
+					}
+				]
+			}
+		},
+		"annotations": []
+	}
+}
