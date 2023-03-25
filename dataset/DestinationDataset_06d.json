@@ -1,0 +1,23 @@
+{
+	"name": "DestinationDataset_06d",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakeCn",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "movies",
+				"container": "southridge"
+			},
+			"compressionCodec": "snappy",
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
