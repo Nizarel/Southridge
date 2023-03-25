@@ -1,0 +1,10 @@
+{
+	"name": "CloudSqlDB",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=southridge-sqlserver-qwueb4uzsy6ee.database.windows.net;Initial Catalog=CloudSales"
+		}
+	}
+}
