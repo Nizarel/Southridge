@@ -1,0 +1,185 @@
+{
+	"name": "RentalsCopyPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach_zsn",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.cw_items",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy_zsn",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{item().source.schema}.@{item().source.table}"
+								},
+								{
+									"name": "Destination",
+									"value": "vanarsdel/Rentals/@{item().destination.fileName}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"validateDataConsistency": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "SourceDataset_zsn",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_schema": "@item().source.schema",
+										"cw_table": "@item().source.table"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DestinationDataset_zsn",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_fileName": "@item().destination.fileName"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"cw_items": {
+				"type": "Array",
+				"defaultValue": [
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "Actors"
+						},
+						"destination": {
+							"fileName": "dboActors.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "Customers"
+						},
+						"destination": {
+							"fileName": "dboCustomers.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "MovieActors"
+						},
+						"destination": {
+							"fileName": "dboMovieActors.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "Movies"
+						},
+						"destination": {
+							"fileName": "dboMovies.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "OnlineMovieMappings"
+						},
+						"destination": {
+							"fileName": "dboOnlineMovieMappings.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "dbo",
+							"table": "Transactions"
+						},
+						"destination": {
+							"fileName": "dboTransactions.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "Customers"
+						},
+						"destination": {
+							"fileName": "HiddenCustomers.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "CustomerUpdates"
+						},
+						"destination": {
+							"fileName": "HiddenCustomerUpdates.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "Transactions"
+						},
+						"destination": {
+							"fileName": "HiddenTransactions.parquet"
+						}
+					},
+					{
+						"source": {
+							"schema": "Hidden",
+							"table": "TransactionUpdates"
+						},
+						"destination": {
+							"fileName": "HiddenTransactionUpdates.parquet"
+						}
+					}
+				]
+			}
+		},
+		"annotations": []
+	}
+}
