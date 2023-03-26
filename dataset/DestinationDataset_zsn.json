@@ -1,0 +1,29 @@
+{
+	"name": "DestinationDataset_zsn",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakeCn",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"cw_fileName": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().cw_fileName",
+					"type": "Expression"
+				},
+				"folderPath": "Rentals",
+				"container": "vanarsdel"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
